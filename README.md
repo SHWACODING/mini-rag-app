@@ -10,12 +10,15 @@ This is a minimal implementation of the RAG model for question answering.
 
 (1) Download and install MiniConda from [here](https://docs.anaconda.com/free/miniconda/#quick-command-line-install)
 (2) Create a new environment using the following command:
+
 ```bash
 $ conda create -n mini-rag python=3.8
 ```
+
 (3) Activate the environment:
+
 ```bash
-$ conda activate mini-rag
+$ conda activate mini-rag-app
 ```
 
 ## Installation
@@ -44,7 +47,7 @@ $ ollama pull dolphin-phi
 ```
 
 (3) (**Optional**) set the `OLLAMA_HOST` in your operating system to be `0.0.0.0`
-(4) Run the Ollama server 
+(4) Run the Ollama server
 
 ```bash
 
@@ -53,7 +56,6 @@ $ ollama serve
 ```
 
 (5) (**Optional**) Explore the APIs [Docs](https://github.com/ollama/ollama/blob/main/docs/api.md)
-
 
 ## Run the FastAPI server
 
@@ -82,13 +84,13 @@ curl --location --request POST 'http://localhost:5000/api/v1/upload/1' \
 
 This step includes:
 (1) Extracting the text from the document
-   
+
 (2) Chunking the text into documents
 
 ![alt text](assets/images/1.png)
 
 (3) Indexing the documents into LanceDB
-   
+
 ![alt text](assets/images/2.png)
 
 ```bash
@@ -107,7 +109,7 @@ curl --location --request POST 'http://localhost:5000/api/v1/process/1' \
 
 This step includes:
 (1) Convert query text to embeddings
-   
+
 (2) Search for similar documents using the embeddings / or / keywords
 
 ![alt text](assets/images/3.png)
@@ -125,15 +127,16 @@ curl --location --request POST 'http://localhost:5000/api/v1/search/1' \
 ```
 
 ### (4) Get the answer
+
 This step includes:
 (1) Convert query text to embeddings
-   
+
 (2) Search for similar documents using the embeddings / or / keywords
-   
+
 (3) Create a prompt including the query and the similar documents
-   
+
 (4) Pass the prompt to the LLM model to get the answer
-   
+
 ![alt text](assets/images/4.png)
 
 ```bash
@@ -141,9 +144,9 @@ curl --location --request POST 'http://localhost:5000/api/v1/answer/1' \
 --header 'Content-Type: application/json' \
 --data '{
     "query": "من مخترع الة التصوير السينمائي؟",
-    "llm_type": "huggingface", 
-    "mode": "hybrid", 
-    "llm_prompt_type": "openai", 
+    "llm_type": "huggingface",
+    "mode": "hybrid",
+    "llm_prompt_type": "openai",
     "return_prompt": true
 }'
 ```
