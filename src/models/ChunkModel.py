@@ -44,6 +44,13 @@ class ChunkModel(BaseDataModel):
         
         return DataChunk(**result)
     
+    async def get_chunks_by_project_id(self, project_id: ObjectId, page_num: int=1, page_size: int=50):
+        records = await self.collection.find({
+            "chunk_project_id": project_id
+        }).skip((page_num - 1) * page_size).limit(page_size).to_list(length=None)
+        
+        return [ DataChunk(**record) for record in records ]
+    
     async def insert_many_chunks (self, chunks: list, batch_size: int=100):
         for i in range(0, len(chunks), batch_size):
             batch = chunks[i : i + batch_size]
