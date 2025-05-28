@@ -18,3 +18,5 @@ class ResponseSignal (Enum):
     GET_VECTOR_DB_COLLECTION_INFO_FAILED="Failed To Get Vector DB Collection Info!!"
     VECTOR_SEARCH_SUCCESS="Vector Search Success!!"
     VECTOR_SEARCH_FAILED="Vector Search Failed!!"
+    RAG_ANSWER_FAILED="RAG Answer Failed!!"
+    RAG_ANSWER_SUCCESS="RAG Answer Success!!"
