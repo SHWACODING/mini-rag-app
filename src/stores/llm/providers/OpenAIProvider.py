@@ -10,7 +10,7 @@ class OpenAIProvider(LLMInterface):
     It implements the LLMInterface and provides methods to set models, generate text, embed text, and construct prompts.
     """
 
-    def _init__(
+    def __init__(
         self, 
         api_key: str, 
         api_url: str=None, 
@@ -39,10 +39,10 @@ class OpenAIProvider(LLMInterface):
         self.embedding_model_id = None
         self.embedding_size = None
         
-        self.client = OpenAI (
-            api_key = self.api_key, 
-            base_url = self.api_url if self.api_url and len(self.api_url) else None,
-        )
+        self.client = OpenAI(api_key=self.api_key)
+        
+        if self.api_url and len(self.api_url):
+            self.client.base_url = self.api_url
         
         self.enums = OpenAIEnums
         

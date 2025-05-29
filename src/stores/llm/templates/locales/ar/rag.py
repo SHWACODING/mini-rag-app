@@ -32,6 +32,9 @@ document_prompt_arabic = Template(
 footer_prompt_arabic = Template(
     "\n".join([
         "بناءً على الوثائق المذكورة أعلاه فقط، يرجى توليد إجابة لسؤال المستخدم.",
+        "## السؤال:",
+        "$query",
+        "",
         "### الإجابة:",
     ])
 )
