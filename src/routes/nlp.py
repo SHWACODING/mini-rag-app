@@ -159,7 +159,7 @@ async def search_index (request: Request, project_id: str, search_request: Searc
     )
 
 @nlp_router.post("/index/answer/{project_id}")
-async def search_index (request: Request, project_id: str, search_request: SearchRequestSchema):
+async def answer_rag (request: Request, project_id: str, search_request: SearchRequestSchema):
     
     project_model = await ProjectModel.create_instance(db_client=request.app.db_client)
     

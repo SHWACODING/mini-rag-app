@@ -3,6 +3,7 @@ from models.db_schemes import Project, DataChunk
 from stores.llm.LLMEnums import DocumentTypeEnum
 from typing import List
 import json
+import logging
 
 class NLPController(BaseController):
     def __init__(self, vector_db_client, generation_client, embedding_client, template_parser):
@@ -12,6 +13,7 @@ class NLPController(BaseController):
         self.generation_client = generation_client
         self.embedding_client = embedding_client
         self.template_parser = template_parser
+        self.logger = logging.getLogger(__name__)
     
     def create_collection_name(self, project_id: str):
         return f"collection_{project_id}".strip()
@@ -97,9 +99,9 @@ class NLPController(BaseController):
         
         if not retrieved_documents or len(retrieved_documents) == 0:
             self.logger.error("Failed to search the vector database.")
+            return None, None, None
         
         # Step 2: Construct LLM Prompt
-        # Note: The prompt construction can be more sophisticated based on the application needs.
         system_prompt = self.template_parser.get_template("rag", "system_prompt")
         
         documents_prompts = "\n".join([
@@ -121,17 +123,16 @@ class NLPController(BaseController):
             }
         )
         
+        # Combine all prompts into a single user message
+        full_prompt = f"{system_prompt}\n\n{documents_prompts}\n\n{footer_prompt}"
+        
+        # Create a simple chat history with just the user message
         chat_history = [
             self.generation_client.construct_prompt(
-                prompt=system_prompt, 
-                role=self.generation_client.enums.SYSTEM.value,
+                prompt=full_prompt,
+                role=self.generation_client.enums.USER.value,
             )
         ]
-        
-        full_prompt = "\n\n".join([
-            documents_prompts,
-            footer_prompt
-        ])
         
         answer = self.generation_client.generate_text(
             prompt=full_prompt,
@@ -140,6 +141,7 @@ class NLPController(BaseController):
         
         if not answer:
             self.logger.error("Failed to generate an answer using the LLM.")
+            return None, full_prompt, chat_history
         
         return answer, full_prompt, chat_history
         
