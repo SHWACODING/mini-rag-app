@@ -28,9 +28,18 @@ class PGVectorProvider(VectorDBInterface):
     async def connect(self):
         async with self.db_client() as session:
             try:
-                await session.execute(sql_text("CREATE EXTENSION vector;"))
-                await session.commit()
+                # Check if vector extension already exists
+                result = await session.execute(sql_text(
+                    "SELECT 1 FROM pg_extension WHERE extname = 'vector'"
+                ))
+                extension_exists = result.scalar_one_or_none()
+                
+                if not extension_exists:
+                    # Only create if it doesn't exist
+                    await session.execute(sql_text("CREATE EXTENSION vector;"))
+                    await session.commit()
             except Exception as e:
+                # If extension already exists or any other error, just log and continue
                 self.logger.warning(f"Vector extension setup: {str(e)}")
                 await session.rollback()
     
