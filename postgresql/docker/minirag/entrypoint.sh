@@ -8,4 +8,5 @@ alembic upgrade head
 cd /app
 
 # Start FastAPI (via CMD passed to container)
+echo "Starting FastAPI server..."
 exec "$@"

@@ -1,7 +1,7 @@
 APP_NAME=""
 APP_VERSION=""
-OPENAI_API_KEY=""
 
+# ================== App Config ==================
 FILE_ALLOWED_TYPES=
 FILE_MAX_SIZE=
 
