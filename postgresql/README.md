@@ -76,3 +76,13 @@ sudo docker compose up -d
 ```bash
 uvicorn main:app --reload --host 0.0.0.0 --port 5000
 ```
+
+## Celery (Development Mode)
+
+For development, you can run Celery services manually instead of using Docker:
+
+To Run the **Celery worker**, you need to run the following command in a separate terminal:
+
+```bash
+python -m celery -A celery_app worker --queues=default,mail_service --loglevel=info
+```
