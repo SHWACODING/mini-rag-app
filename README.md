@@ -1,6 +1,8 @@
 # MINI-RAG-APP
 
-This Is a Comprehensive Implementation of RAG (Retrieval Augmented Generation) From Absolute Scratch Using Python, FastAPI, Qdrant as VectorDB, (MongoDB - PostgreSQL, pgvector, SqlAlchemy) as Main DB, Groq as LLM, Gemini Embeddings and Recently Adding Task Queue System (Celery + Redis + RabbitMQ) With Deployment Using Github Actions and Docker
+This Is a Comprehensive Implementation of RAG (Retrieval Augmented Generation) From Absolute Scratch Using Python, FastAPI, Qdrant as VectorDB, (MongoDB - PostgreSQL, pgvector, SqlAlchemy) as Main DB, Groq as LLM, Gemini Embeddings and Recently Adding Task Queue System (Celery + Redis + RabbitMQ) With Deployment Using Github Actions and Docker.
+
+![Thumbnail](./assets/thumbnail.jpg)
 
 ## Project Structure
 

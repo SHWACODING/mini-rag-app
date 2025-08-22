@@ -2,6 +2,11 @@ from fastapi import FastAPI, APIRouter, Depends
 import os
 from helpers.config import get_settings, Settings
 from datetime import datetime
+from time import sleep
+from tasks.mail_service import send_email_reports
+import logging
+
+logger = logging.getLogger('uvicorn.error')
 
 base_router = APIRouter (
     prefix="/api/v1",
@@ -18,3 +23,18 @@ async def welcome (app_settings : Settings = Depends(get_settings)):
         "app_version": app_version,
 	"datetime": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
+
+@base_router.get("/send_reports")
+async def send_reports (app_settings : Settings = Depends(get_settings)):
+    
+    # ======= START =======
+    task = send_email_reports.delay(
+        mail_wait_seconds=3
+    )
+    # ======= END =======
+    
+    return {
+        "success": True,
+        "task_id": task.id
+    }
+
