@@ -84,5 +84,9 @@ For development, you can run Celery services manually instead of using Docker:
 To Run the **Celery worker**, you need to run the following command in a separate terminal:
 
 ```bash
-python -m celery -A celery_app worker --queues=default,mail_service --loglevel=info
+python -m celery -A celery_app worker --queues=default,mail_service_queue --loglevel=info
+```
+
+```bash
+python -m celery -A celery_app worker --queues=default,file_processing_queue --loglevel=info
 ```

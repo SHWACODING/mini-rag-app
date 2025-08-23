@@ -1,8 +1,6 @@
-from fastapi import FastAPI, APIRouter, Depends
-import os
+from fastapi import APIRouter, Depends
 from helpers.config import get_settings, Settings
 from datetime import datetime
-from time import sleep
 from tasks.mail_service import send_email_reports
 import logging
 

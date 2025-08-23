@@ -1,15 +1,75 @@
 from celery import Celery
+from stores.llm.LLMProviderFactory import LLMProviderFactory
+from stores.vectordb.VectorDBProviderFactory import VectorDBProviderFactory
+from stores.llm.templates.template_parser import TemplateParser
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.orm import sessionmaker
 from helpers.config import get_settings
+
+
 
 settings = get_settings()
 
-# Create Celery App Instance
-celery_app = Celery(
+
+async def get_setup_utils():
+    settings = get_settings()
+    
+    postgres_conn = f"postgresql+asyncpg://{settings.POSTGRES_USERNAME}:{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_HOST}:{settings.POSTGRES_PORT}/{settings.POSTGRES_MAIN_DB}"
+    db_engine = create_async_engine(postgres_conn)
+    
+    db_client = sessionmaker(
+        db_engine,
+        class_=AsyncSession,
+        expire_on_commit=False
+    )
+    
+    llm_provider_factory = LLMProviderFactory(settings)
+    vectordb_provider_factory = VectorDBProviderFactory(config=settings, db_client=db_client)
+    
+    # Generation Client ??
+    generation_client = llm_provider_factory.create(provider=settings.GENERATION_BACKEND)
+    generation_client.set_generation_model(model_id=settings.GENERATION_MODEL_ID)
+    
+    # Embedding Client ??
+    embedding_client = llm_provider_factory.create(provider=settings.EMBEDDING_BACKEND)
+    embedding_client.set_embedding_model(
+        model_id=settings.EMBEDDING_MODEL_ID,
+        embedding_size=settings.EMBEDDING_MODEL_SIZE,
+    )
+    
+    # Vector DB Client ??
+    vector_db_client = vectordb_provider_factory.create(
+        provider=settings.VECTOR_DB_BACKEND
+    )
+    
+    await vector_db_client.connect()
+    
+    # Template Parser
+    template_parser = TemplateParser(
+        language=settings.PRIMARY_LANGUAGE,
+        default_language=settings.DEFAULT_LANGUAGE
+    )
+    
+    return (
+        db_engine,
+        db_client,
+        llm_provider_factory,
+        vectordb_provider_factory,
+        generation_client,
+        embedding_client,
+        vector_db_client,
+        template_parser
+    )
+
+
+# Create Celery Instance
+celery_app= Celery(
     "minirag",
     broker=settings.CELERY_BROKER_URL,
     backend=settings.CELERY_RESULT_BACKEND,
     include=[
-        "tasks.mail_service"
+        # "tasks.mail_service",
+        "tasks.file_processing",
     ]
 )
 
@@ -41,7 +101,8 @@ celery_app.conf.update(
     worker_cancel_long_running_tasks_on_connection_loss=True,
     
     task_routes={
-        "tasks.mail_service.send_email_reports": {"queue": "mail_server_queue"}
+        # "tasks.mail_service.send_email_reports": {"queue": "mail_server_queue"},
+        "tasks.file_processing.process_project_files": {"queue": "file_processing_queue"},
     }
 )
 
