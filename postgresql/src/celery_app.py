@@ -70,6 +70,8 @@ celery_app= Celery(
     include=[
         # "tasks.mail_service",
         "tasks.file_processing",
+        "tasks.data_indexing",
+        "tasks.process_workflow",
     ]
 )
 
@@ -103,6 +105,8 @@ celery_app.conf.update(
     task_routes={
         # "tasks.mail_service.send_email_reports": {"queue": "mail_server_queue"},
         "tasks.file_processing.process_project_files": {"queue": "file_processing_queue"},
+        "tasks.data_indexing.index_data_content": {"queue": "data_indexing_queue"},
+        "tasks.process_workflow.process_and_push_workflow": {"queue": "file_processing_queue"},
     }
 )
 

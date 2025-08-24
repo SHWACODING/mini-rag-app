@@ -87,6 +87,28 @@ To Run the **Celery worker**, you need to run the following command in a separat
 python -m celery -A celery_app worker --queues=default,mail_service_queue --loglevel=info
 ```
 
+Run **Celery worker** With default and file_processing_queue Queue
+
 ```bash
 python -m celery -A celery_app worker --queues=default,file_processing_queue --loglevel=info
 ```
+
+Run **Celery worker** With default, file_processing_queue and data_indexing_queue Queue
+
+```bash
+python -m celery -A celery_app worker --queues=default,file_processing_queue,data_indexing_queue --loglevel=info
+```
+
+To run the **Beat scheduler**, you can run the following command in a separate terminal:
+
+```bash
+python -m celery -A celery_app beat --loglevel=info
+```
+
+To Run **Flower Dashboard**, you can run the following command in a separate terminal:
+
+```bash
+python -m celery -A celery_app flower --conf=flower_config.py
+```
+
+open your browser and go to `http://localhost:5555` to see the dashboard.

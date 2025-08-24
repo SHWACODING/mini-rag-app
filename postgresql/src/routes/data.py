@@ -12,6 +12,7 @@ from models.AssetModel import AssetModel
 from models.db_schemes import Asset
 from models.enums.AssetTypeEnums import AssetTypeEnum
 from tasks.file_processing import process_project_files
+from tasks.process_workflow import process_and_push_workflow
 
 logger = logging.getLogger('uvicorn.error')
 
@@ -102,3 +103,27 @@ async def process_endpoint (request: Request, project_id: int, process_request: 
             "task_id": task.id
         }
     )
+
+
+@data_router.post ("/process-and-push/{project_id}")
+async def process_and_push_endpoint (request: Request, project_id: int, process_request: ProcessRequest):
+
+    chunk_size = process_request.chunk_size
+    overlap_size = process_request.overlap_size
+    do_reset = process_request.do_reset
+    
+    workflow_task = process_and_push_workflow.delay(
+        project_id=project_id,
+        file_id=process_request.file_id,
+        chunk_size=chunk_size,
+        overlap_size=overlap_size,
+        do_reset=do_reset
+    )
+    
+    return JSONResponse(
+        content={
+            "Signal": ResponseSignal.PROCESS_AND_PUSH_WORKFLOW_READY.value,
+            "workflow_task_id": workflow_task.id
+        }
+    )
+

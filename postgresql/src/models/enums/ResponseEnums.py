@@ -20,3 +20,5 @@ class ResponseSignal (Enum):
     VECTOR_SEARCH_FAILED="Vector Search Failed!!"
     RAG_ANSWER_FAILED="RAG Answer Failed!!"
     RAG_ANSWER_SUCCESS="RAG Answer Success!!"
+    DATA_PUSH_TASK_READY="Task For Pushing Data Is Ready!!"
+    PROCESS_AND_PUSH_WORKFLOW_READY="Process and Push Workflow Is Ready!!"
