@@ -99,6 +99,10 @@ Run **Celery worker** With default, file_processing_queue and data_indexing_queu
 python -m celery -A celery_app worker --queues=default,file_processing_queue,data_indexing_queue --loglevel=info
 ```
 
+```bash
+python -m celery -A celery_app worker --queues=default,file_processing_queue,data_indexing_queue,maintenance_queue --loglevel=info
+```
+
 To run the **Beat scheduler**, you can run the following command in a separate terminal:
 
 ```bash
